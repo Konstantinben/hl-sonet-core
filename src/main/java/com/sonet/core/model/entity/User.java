@@ -1,0 +1,46 @@
+package com.sonet.core.model.entity;
+
+import com.sonet.core.model.Role;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+
+import javax.validation.constraints.*;
+import java.util.Date;
+import java.util.UUID;
+
+@Data
+@Table("users")
+public class User {
+
+    @Id
+    private Long id;
+
+    @NotBlank
+    @Email
+    private String email;
+
+    @NotBlank
+    private String firstName;
+
+    private String lastName;
+
+    @Past
+    private Date birthdate;
+
+    @Size(min = 1, max = 1)
+    @Pattern(regexp = "[mfMF]")
+    private String gender;
+
+    private String city;
+
+    private String biography;
+
+    private UUID uuid;
+
+    private Role role;
+
+    @NotBlank
+    private String password;
+
+}

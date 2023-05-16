@@ -1,0 +1,60 @@
+server:
+  port: ${APP_PORT:8080}
+  shutdown: immediate
+  error.include-stacktrace: never
+
+springdoc:
+  show-actuator: true
+  swagger-ui.path: /api.html
+
+management:
+  endpoints.web.discovery.enabled: false
+  endpoint.health:
+    cache.time-to-live: 100ms
+    probes.enabled: true
+    show-details: always
+    show-components: always
+
+logging:
+  appender: ${LOGGING_APPENDERS:stdout}
+  root:
+    level: INFO
+  level:
+    org.springframework.jdbc: DEBUG
+    com.sonet: DEBUG
+
+spring:
+  application:
+    name: hl-sonet-core
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database: postgresql
+    properties:
+      hibernate:
+        generate_statistics: false
+      jdbc:
+        batch_size: 100
+      order_inserts: true
+      order_updates: true
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/sonet_core}
+    username: ${DB_USER:postgres}
+    password: ${DB_PWD:postgres}
+    driver-class-name: org.postgresql.Driver
+    # initialization-mode: always
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/evolution/db.changelog-master.yaml
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/sonet_core}
+    user: ${DB_USER:postgres}
+    password: ${DB_PWD:postgres}
+
+app:
+  jwt:
+    secret: megaTopSecret
+    expiration: 100500000
+    header: Authorization
