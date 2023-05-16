@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "446529a8-7798-4700-a96f-c9386d3a3503",
+		"name": "hl-sonet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5562917"
+	},
+	"item": [
+		{
+			"name": "user/register - User Registration",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"email\": \"new2@new.ru\",\r\n        \"firstName\": \"new2\",\r\n        \"password\": \"new2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/update User Profile Update",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "new2@new.ru",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "new2",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"new2\",\r\n    \"lastName\": \"newoff2\",\r\n    \"birthdate\": \"2017-02-01\",\r\n    \"gender\": \"M\",\r\n    \"city\": \"SPB\",\r\n    \"biography\": \"lalala\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/login User Login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"new2@new.ru\",\r\n    \"password\": \"new2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/friend/{uuid} Friend Add Basic Auth",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "new2@new.ru",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "new2",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/friend/set/e2bd5d9a-f6f8-4446-81b2-50fa961eabe1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"friend",
+						"set",
+						"e2bd5d9a-f6f8-4446-81b2-50fa961eabe1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/friend/{uuid} Friend Add JWT Authorization",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXcyQG5ldy5ydSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNjg0MTAwMzk1LCJleHAiOjE2ODQyMDA4OTV9.Vd8EpCZbSaW80bOceL5FxAJlQc6BhbPzNVj1iRjVoj8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/friend/set/e2bd5d9a-f6f8-4446-81b2-50fa961eabe1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"friend",
+						"set",
+						"e2bd5d9a-f6f8-4446-81b2-50fa961eabe1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/friend/{uuid} Friend Add  - No Authorization - 401",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/friend/set/e2bd5d9a-f6f8-4446-81b2-50fa961eabe1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"friend",
+						"set",
+						"e2bd5d9a-f6f8-4446-81b2-50fa961eabe1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/get/{uuid} User Profile",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/get/b49915c4-a791-4131-8e01-3ad62353b3a2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"get",
+						"b49915c4-a791-4131-8e01-3ad62353b3a2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/register - User Registration Invalid",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"email\": \"new@new.ru\",\r\n        \"firstName\": \"new\",\r\n        \"password\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
