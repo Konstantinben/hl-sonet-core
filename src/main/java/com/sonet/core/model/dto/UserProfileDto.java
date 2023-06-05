@@ -25,4 +25,5 @@ public class UserProfileDto {
     private String city;
     private String biography;
     private UUID uuid;
+    private Integer age;
 }

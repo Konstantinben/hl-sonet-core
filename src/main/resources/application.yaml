@@ -20,7 +20,7 @@ logging:
   root:
     level: INFO
   level:
-    org.springframework.jdbc: DEBUG
+#    org.springframework.jdbc: DEBUG
     com.sonet: DEBUG
 
 spring:
@@ -46,6 +46,9 @@ spring:
     password: ${DB_PWD:postgres}
     driver-class-name: org.postgresql.Driver
     # initialization-mode: always
+    hikari:
+      maximum-pool-size: ${DB_MAX_CONNECTIONS:100}
+      minimum-idle: ${DB_MIN_CONNECTIONS:3}
   liquibase:
     enabled: true
     change-log: classpath:/db/evolution/db.changelog-master.yaml
