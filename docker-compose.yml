@@ -1,26 +1,130 @@
 version: '3.5'
 
+networks:
+  pgnet:
+
 services:
+  grafana:
+    container_name: grafana-test
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    networks:
+      - pgnet
+
+  prometheus:
+    container_name: prometheus-test
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - pgnet
+
   postgres:
-    container_name: postgres_container
-    image: postgres:14.7
+    container_name: pgmaster
+    image: postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sonet_core
-      PGDATA: /data/postgres
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
-#    volumes:
-#      - ./postgres/:/data/postgres
+    volumes:
+      - ./volumes/pgmaster/:/var/lib/postgresql/data
+    networks:
+      - pgnet
     expose:
       - "5432"
     ports:
       - "5432:5432"
     restart: unless-stopped
+
+  postgres-slave-1:
+    container_name: pgslave
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./volumes/pgslave/:/var/lib/postgresql/data
+    networks:
+      - pgnet
+    expose:
+      - "15432"
+    ports:
+      - "15432:5432"
+    restart: unless-stopped
+
+  postgres-slave-2:
+    container_name: pgasyncslave
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./volumes/pgasyncslave/:/var/lib/postgresql/data
+    networks:
+      - pgnet
+    expose:
+      - "25432"
+    ports:
+      - "25432:5432"
+    restart: unless-stopped
+
+  postgres-exporter:
+    container_name: pg-exporter
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - 9187:9187
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:pass@postgres:5432/postgres?sslmode=disable"
+    networks:
+      - pgnet
+    links:
+      - postgres
+      - prometheus
+  postgres-exporter-slave-1:
+    container_name: pg-exporter-slave-1
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - 19187:9187
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:pass@postgres-slave-1:15432/postgres?sslmode=disable"
+    networks:
+      - pgnet
+    links:
+      - postgres-slave-1
+      - prometheus
+  postgres-exporter-slave-2:
+    container_name: pg-exporter-slave-2
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - 29187:9187
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:pass@postgres-slave-2:25432/postgres?sslmode=disable"
+    networks:
+      - pgnet
+    links:
+      - postgres-slave-2
+      - prometheus
+
   sonet-core:
     image: 'sonet-core:latest'
     build:
@@ -33,3 +137,8 @@ services:
         condition: service_healthy
     environment:
       - DB_URL=jdbc:postgresql://postgres:5432/postgres
+      - DB_READ_URL=jdbc:postgresql://postgres-slave-1:15432/postgres
+      - DB_PWD=pass
+    networks:
+      - pgnet
+

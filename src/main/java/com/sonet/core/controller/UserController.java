@@ -7,6 +7,7 @@ import com.sonet.core.model.dto.UserCreatedDto;
 import com.sonet.core.model.dto.UserProfileDto;
 import com.sonet.core.model.entity.User;
 import com.sonet.core.model.mapper.UserMapper;
+import com.sonet.core.repository.UserReadRepository;
 import com.sonet.core.repository.UserRepository;
 import com.sonet.core.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +49,7 @@ public class UserController {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final UserReadRepository userReadRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -113,7 +115,7 @@ public class UserController {
     @GetMapping ("/get/{uuid}")
     @Operation(summary = "Посмотреть профиль")
     public UserProfileDto getById(@PathVariable("uuid") UUID userId) {
-        return userRepository
+        return userReadRepository
                 .findByUuid(userId)
                 .map(userMapper::toUserProfileDto)
                 .orElseThrow(() -> new BadCredentialsException("Cannod find user by " + userId));
@@ -124,7 +126,7 @@ public class UserController {
     @Operation(summary = "Поиск анкет")
     public List<UserProfileDto> searchByName(@NotBlank @RequestParam("first_name") String firstName,
                                              @NotBlank @RequestParam("last_name") String lastName) {
-        List<UserProfileDto> result = userRepository
+        List<UserProfileDto> result = userReadRepository
                 .findLikeFirstAndLastNames(firstName.trim(), lastName.trim())
                 .stream()
                 .sorted(Comparator.comparingLong(User::getId))
